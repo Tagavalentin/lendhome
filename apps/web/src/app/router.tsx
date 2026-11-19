@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { GuestOnly, RequireAuth, RequireRole } from './guards';
 import { AppLayout } from './layout';
 import { LoginPage } from '@/features/auth/components/LoginPage';
+import { DashboardPage } from '@/features/dashboard/pages/DashboardPage';
 import { ResourceListPage } from '@/features/resources/pages/ResourceListPage';
 import { ResourceDetailPage } from '@/features/resources/pages/ResourceDetailPage';
 import { AvailabilityPage } from '@/features/availability/pages/AvailabilityPage';
@@ -9,8 +10,10 @@ import { MyReservationsPage } from '@/features/reservations/pages/MyReservations
 import { ReservationRequestsPage } from '@/features/reservations/pages/ReservationRequestsPage';
 import { MyLoansPage } from '@/features/loans/pages/MyLoansPage';
 import { LoanRequestsPage } from '@/features/loans/pages/LoanRequestsPage';
+import { AdminUsersPage } from '@/features/admin/pages/AdminUsersPage';
+import { AuditLogPage } from '@/features/admin/pages/AuditLogPage';
+import { AdminSettingsPage } from '@/features/admin/pages/AdminSettingsPage';
 import { ForbiddenPage, NotFoundPage } from '@/pages/ErrorPages';
-import { HomePage } from '@/pages/HomePage';
 
 export function AppRouter() {
   return (
@@ -21,7 +24,7 @@ export function AppRouter() {
 
       <Route element={<RequireAuth />}>
         <Route element={<AppLayout />}>
-          <Route index element={<HomePage />} />
+          <Route index element={<DashboardPage />} />
           <Route path="ressources" element={<ResourceListPage />} />
           <Route path="ressources/:id" element={<ResourceDetailPage />} />
           <Route path="ressources/:id/disponibilite" element={<AvailabilityPage />} />
@@ -31,6 +34,12 @@ export function AppRouter() {
           <Route element={<RequireRole roles={['manager', 'admin']} />}>
             <Route path="reservations" element={<ReservationRequestsPage />} />
             <Route path="prets" element={<LoanRequestsPage />} />
+          </Route>
+
+          <Route element={<RequireRole roles={['admin']} />}>
+            <Route path="admin" element={<AdminUsersPage />} />
+            <Route path="admin/audit" element={<AuditLogPage />} />
+            <Route path="admin/parametres" element={<AdminSettingsPage />} />
           </Route>
 
           <Route path="403" element={<ForbiddenPage />} />

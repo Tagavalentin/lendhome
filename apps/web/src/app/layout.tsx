@@ -12,6 +12,8 @@ const NAV_ITEMS: { to: string; label: string; icon: string; roles?: UserRole[] }
   { to: '/reservations', label: 'Demandes', icon: '🗂', roles: ['manager', 'admin'] },
   { to: '/mes-prets', label: 'Mes prêts', icon: '🔧' },
   { to: '/prets', label: 'Prêts à traiter', icon: '📦', roles: ['manager', 'admin'] },
+  { to: '/admin', label: 'Administration', icon: '⚙', roles: ['admin'] },
+  { to: '/admin/audit', label: "Journal d'audit", icon: '📜', roles: ['admin'] },
 ];
 
 export function AppLayout() {
