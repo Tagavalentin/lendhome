@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth';
 import { useResource, useCreateResource, useUpdateResource } from '../hooks';
 import { ResourceForm } from '../components/ResourceForm';
+import { CollaborationSection } from '@/features/collaboration/components/CollaborationSection';
 import { Button } from '@/components/ui/Button';
 import { Badge, Card, ErrorState, PageHeader, Spinner } from '@/components/ui/Feedback';
 import {
@@ -224,6 +225,8 @@ export function ResourceDetailPage() {
           )}
         </div>
       </div>
+
+      <CollaborationSection resourceId={resource.id} />
 
       <ResourceForm
         open={editOpen}
