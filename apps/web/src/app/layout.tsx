@@ -7,6 +7,7 @@ import type { UserRole } from '@plateforme/shared';
 
 const NAV_ITEMS: { to: string; label: string; icon: string; roles?: UserRole[] }[] = [
   { to: '/', label: 'Tableau de bord', icon: '▦' },
+  { to: '/ressources', label: 'Ressources', icon: '▤' },
 ];
 
 export function AppLayout() {
