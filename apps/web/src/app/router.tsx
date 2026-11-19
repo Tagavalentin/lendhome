@@ -15,41 +15,45 @@ import { AuditLogPage } from '@/features/admin/pages/AuditLogPage';
 import { AdminSettingsPage } from '@/features/admin/pages/AdminSettingsPage';
 import { NotificationsPage } from '@/features/notifications/components/NotificationBell';
 import { ForbiddenPage, NotFoundPage } from '@/pages/ErrorPages';
+import { ChatWidget } from '@/features/chatbot/components/ChatWidget';
 
 export function AppRouter() {
   return (
-    <Routes>
-      <Route element={<GuestOnly />}>
-        <Route path="/login" element={<LoginPage />} />
-      </Route>
-
-      <Route element={<RequireAuth />}>
-        <Route element={<AppLayout />}>
-          <Route index element={<DashboardPage />} />
-          <Route path="ressources" element={<ResourceListPage />} />
-          <Route path="ressources/:id" element={<ResourceDetailPage />} />
-          <Route path="ressources/:id/disponibilite" element={<AvailabilityPage />} />
-          <Route path="mes-reservations" element={<MyReservationsPage />} />
-          <Route path="mes-prets" element={<MyLoansPage />} />
-          <Route path="notifications" element={<NotificationsPage />} />
-
-          <Route element={<RequireRole roles={['manager', 'admin']} />}>
-            <Route path="reservations" element={<ReservationRequestsPage />} />
-            <Route path="prets" element={<LoanRequestsPage />} />
-          </Route>
-
-          <Route element={<RequireRole roles={['admin']} />}>
-            <Route path="admin" element={<AdminUsersPage />} />
-            <Route path="admin/audit" element={<AuditLogPage />} />
-            <Route path="admin/parametres" element={<AdminSettingsPage />} />
-          </Route>
-
-          <Route path="403" element={<ForbiddenPage />} />
-          <Route path="*" element={<NotFoundPage />} />
+    <>
+      <Routes>
+        <Route element={<GuestOnly />}>
+          <Route path="/login" element={<LoginPage />} />
         </Route>
-      </Route>
 
-      <Route path="/" element={<Navigate to="/login" replace />} />
-    </Routes>
+        <Route element={<RequireAuth />}>
+          <Route element={<AppLayout />}>
+            <Route index element={<DashboardPage />} />
+            <Route path="ressources" element={<ResourceListPage />} />
+            <Route path="ressources/:id" element={<ResourceDetailPage />} />
+            <Route path="ressources/:id/disponibilite" element={<AvailabilityPage />} />
+            <Route path="mes-reservations" element={<MyReservationsPage />} />
+            <Route path="mes-prets" element={<MyLoansPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+
+            <Route element={<RequireRole roles={['manager', 'admin']} />}>
+              <Route path="reservations" element={<ReservationRequestsPage />} />
+              <Route path="prets" element={<LoanRequestsPage />} />
+            </Route>
+
+            <Route element={<RequireRole roles={['admin']} />}>
+              <Route path="admin" element={<AdminUsersPage />} />
+              <Route path="admin/audit" element={<AuditLogPage />} />
+              <Route path="admin/parametres" element={<AdminSettingsPage />} />
+            </Route>
+
+            <Route path="403" element={<ForbiddenPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
+        </Route>
+
+        <Route path="/" element={<Navigate to="/login" replace />} />
+      </Routes>
+      <ChatWidget />
+    </>
   );
 }
