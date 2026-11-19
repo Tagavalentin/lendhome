@@ -7,6 +7,8 @@ import { ResourceDetailPage } from '@/features/resources/pages/ResourceDetailPag
 import { AvailabilityPage } from '@/features/availability/pages/AvailabilityPage';
 import { MyReservationsPage } from '@/features/reservations/pages/MyReservationsPage';
 import { ReservationRequestsPage } from '@/features/reservations/pages/ReservationRequestsPage';
+import { MyLoansPage } from '@/features/loans/pages/MyLoansPage';
+import { LoanRequestsPage } from '@/features/loans/pages/LoanRequestsPage';
 import { ForbiddenPage, NotFoundPage } from '@/pages/ErrorPages';
 import { HomePage } from '@/pages/HomePage';
 
@@ -24,9 +26,11 @@ export function AppRouter() {
           <Route path="ressources/:id" element={<ResourceDetailPage />} />
           <Route path="ressources/:id/disponibilite" element={<AvailabilityPage />} />
           <Route path="mes-reservations" element={<MyReservationsPage />} />
+          <Route path="mes-prets" element={<MyLoansPage />} />
 
           <Route element={<RequireRole roles={['manager', 'admin']} />}>
             <Route path="reservations" element={<ReservationRequestsPage />} />
+            <Route path="prets" element={<LoanRequestsPage />} />
           </Route>
 
           <Route path="403" element={<ForbiddenPage />} />

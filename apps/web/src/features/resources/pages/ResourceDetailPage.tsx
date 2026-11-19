@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth';
 import { useResource, useCreateResource, useUpdateResource } from '../hooks';
 import { ResourceForm } from '../components/ResourceForm';
+import { LoanRequestForm } from '@/features/loans/components/LoanRequestForm';
 import { CollaborationSection } from '@/features/collaboration/components/CollaborationSection';
 import { Button } from '@/components/ui/Button';
 import { Badge, Card, ErrorState, PageHeader, Spinner } from '@/components/ui/Feedback';
@@ -21,6 +22,7 @@ export function ResourceDetailPage() {
   const createResource = useCreateResource();
   const updateResource = useUpdateResource(id ?? '');
   const [editOpen, setEditOpen] = useState(false);
+  const [loanOpen, setLoanOpen] = useState(false);
   const [photoIdx, setPhotoIdx] = useState(0);
 
   const isManager = user?.role === 'manager' || user?.role === 'admin';
@@ -31,6 +33,7 @@ export function ResourceDetailPage() {
   }
 
   const canBook = resource.type === 'room' && resource.isActive;
+  const canBorrow = resource.type === 'equipment' && resource.equipment?.state === 'available';
 
   const save = async (values: Parameters<typeof createResource.mutateAsync>[0]) => {
     if (resource.id && id) {
@@ -63,6 +66,11 @@ export function ResourceDetailPage() {
               <Link to={`/ressources/${resource.id}/disponibilite`}>
                 <Button>Réserver</Button>
               </Link>
+            )}
+            {canBorrow && (
+              <Button variant="success" onClick={() => setLoanOpen(true)}>
+                Emprunter
+              </Button>
             )}
             {isManager && (
               <Button variant="secondary" onClick={() => setEditOpen(true)}>
@@ -234,6 +242,12 @@ export function ResourceDetailPage() {
         initial={resource}
         loading={updateResource.isPending}
         onSubmit={save}
+      />
+      <LoanRequestForm
+        open={loanOpen}
+        onClose={() => setLoanOpen(false)}
+        resourceId={resource.id}
+        resourceName={resource.name}
       />
     </div>
   );

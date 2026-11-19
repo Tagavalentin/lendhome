@@ -10,6 +10,8 @@ const NAV_ITEMS: { to: string; label: string; icon: string; roles?: UserRole[] }
   { to: '/ressources', label: 'Ressources', icon: '▤' },
   { to: '/mes-reservations', label: 'Mes réservations', icon: '📅' },
   { to: '/reservations', label: 'Demandes', icon: '🗂', roles: ['manager', 'admin'] },
+  { to: '/mes-prets', label: 'Mes prêts', icon: '🔧' },
+  { to: '/prets', label: 'Prêts à traiter', icon: '📦', roles: ['manager', 'admin'] },
 ];
 
 export function AppLayout() {
