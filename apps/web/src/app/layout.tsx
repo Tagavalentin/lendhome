@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth';
 import { logout as apiLogout } from '@/features/auth/api';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
+import { useRealtime } from '@/hooks/useRealtime';
 import { USER_ROLE_LABELS, cn } from '@/lib/utils';
 import type { UserRole } from '@plateforme/shared';
 
@@ -18,11 +19,18 @@ const NAV_ITEMS: { to: string; label: string; icon: string; roles?: UserRole[] }
   { to: '/notifications', label: 'Notifications', icon: '🔔' },
 ];
 
+const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
+  connected: { label: 'Connecté', cls: 'bg-emerald-100 text-emerald-800' },
+  reconnecting: { label: 'Reconnexion…', cls: 'bg-amber-100 text-amber-800' },
+  disconnected: { label: 'Hors ligne', cls: 'bg-gray-200 text-gray-600' },
+};
+
 export function AppLayout() {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const status = useRealtime();
 
   const handleLogout = async () => {
     try {
@@ -72,6 +80,16 @@ export function AppLayout() {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 sm:px-6">
           <span className="text-lg font-bold text-brand-700 md:hidden">Fablab</span>
+          <span
+            className={cn(
+              'hidden items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium sm:inline-flex',
+              STATUS_LABEL[status]?.cls,
+            )}
+            title="État de la connexion temps réel"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" />
+            {STATUS_LABEL[status]?.label}
+          </span>
           <div className="ml-auto flex items-center gap-2">
             <NotificationBell />
             <div className="relative">
