@@ -13,6 +13,7 @@ import { LoanRequestsPage } from '@/features/loans/pages/LoanRequestsPage';
 import { AdminUsersPage } from '@/features/admin/pages/AdminUsersPage';
 import { AuditLogPage } from '@/features/admin/pages/AuditLogPage';
 import { AdminSettingsPage } from '@/features/admin/pages/AdminSettingsPage';
+import { NotificationsPage } from '@/features/notifications/components/NotificationBell';
 import { ForbiddenPage, NotFoundPage } from '@/pages/ErrorPages';
 
 export function AppRouter() {
@@ -30,6 +31,7 @@ export function AppRouter() {
           <Route path="ressources/:id/disponibilite" element={<AvailabilityPage />} />
           <Route path="mes-reservations" element={<MyReservationsPage />} />
           <Route path="mes-prets" element={<MyLoansPage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
 
           <Route element={<RequireRole roles={['manager', 'admin']} />}>
             <Route path="reservations" element={<ReservationRequestsPage />} />

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth';
 import { logout as apiLogout } from '@/features/auth/api';
+import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 import { USER_ROLE_LABELS, cn } from '@/lib/utils';
 import type { UserRole } from '@plateforme/shared';
 
@@ -14,6 +15,7 @@ const NAV_ITEMS: { to: string; label: string; icon: string; roles?: UserRole[] }
   { to: '/prets', label: 'Prêts à traiter', icon: '📦', roles: ['manager', 'admin'] },
   { to: '/admin', label: 'Administration', icon: '⚙', roles: ['admin'] },
   { to: '/admin/audit', label: "Journal d'audit", icon: '📜', roles: ['admin'] },
+  { to: '/notifications', label: 'Notifications', icon: '🔔' },
 ];
 
 export function AppLayout() {
@@ -71,6 +73,7 @@ export function AppLayout() {
         <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 sm:px-6">
           <span className="text-lg font-bold text-brand-700 md:hidden">Fablab</span>
           <div className="ml-auto flex items-center gap-2">
+            <NotificationBell />
             <div className="relative">
               <button
                 onClick={() => setMenuOpen((o) => !o)}
