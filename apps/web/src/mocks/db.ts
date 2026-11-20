@@ -208,7 +208,7 @@ const resources: Resource[] = [
     description: 'Découpe et gravure laser sur bois, acrylique, tissu. Fichier vectoriel requis.',
     locationId: 'loc_fablab',
     locationName: 'Fablab des Gobelins',
-    photos: [img('xtool')],
+    photos: ['/images/laser-xtool.jpg'],
     tags: ['laser', 'gravure'],
     equipment: {
       inventoryNumber: 'EQ-LAS-014',
