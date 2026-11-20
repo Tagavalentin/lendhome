@@ -228,7 +228,7 @@ const resources: Resource[] = [
     description: 'Fraiseuse 3 axes pour bois et plastiques. G-code fourni par l’utilisateur.',
     locationId: 'loc_campus',
     locationName: 'Campus Innovant',
-    photos: [img('cnc')],
+    photos: ['/images/cnc-shapeoko.jpg'],
     tags: ['CNC', 'usinage'],
     equipment: {
       inventoryNumber: 'EQ-CNC-007',
