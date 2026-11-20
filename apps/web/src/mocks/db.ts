@@ -102,8 +102,6 @@ const locations: Location[] = [
   },
 ];
 
-const img = (seed: string) => `https://picsum.photos/seed/${seed}/800/450`;
-
 const resources: Resource[] = [
   {
     id: 'res_salle_a',
@@ -268,7 +266,7 @@ const resources: Resource[] = [
     description: 'Multimètre professionnel pour mesures électroniques.',
     locationId: 'loc_campus',
     locationName: 'Campus Innovant',
-    photos: [img('fluke')],
+    photos: ['/images/fluke-87v.jpg'],
     tags: ['électronique', 'mesure'],
     equipment: {
       inventoryNumber: 'EQ-ELE-031',
