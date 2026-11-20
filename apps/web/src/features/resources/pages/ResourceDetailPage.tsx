@@ -6,7 +6,7 @@ import { ResourceForm } from '../components/ResourceForm';
 import { LoanRequestForm } from '@/features/loans/components/LoanRequestForm';
 import { CollaborationSection } from '@/features/collaboration/components/CollaborationSection';
 import { Button } from '@/components/ui/Button';
-import { Badge, Card, ErrorState, PageHeader, Spinner } from '@/components/ui/Feedback';
+import { Badge, Card, ErrorState, Spinner } from '@/components/ui/Feedback';
 import {
   EQUIPMENT_KIND_LABELS,
   EQUIPMENT_STATE_LABELS,
@@ -49,37 +49,41 @@ export function ResourceDetailPage() {
 
   return (
     <div className="mx-auto max-w-5xl">
-      <nav className="mb-4 text-sm text-gray-500" aria-label="Fil d'Ariane">
-        <Link to="/ressources" className="hover:text-brand-600">
-          Ressources
-        </Link>
-        <span aria-hidden="true"> / </span>
-        <span className="text-gray-900">{resource.name}</span>
-      </nav>
+      <Link
+        to="/ressources"
+        className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-brand-600 hover:underline"
+      >
+        ← Retour à la recherche
+      </Link>
 
-      <PageHeader
-        title={resource.name}
-        description={resource.locationName}
-        actions={
-          <div className="flex flex-wrap gap-2">
-            {canBook && (
-              <Link to={`/ressources/${resource.id}/disponibilite`}>
-                <Button>Réserver</Button>
-              </Link>
-            )}
-            {canBorrow && (
-              <Button variant="success" onClick={() => setLoanOpen(true)}>
-                Emprunter
-              </Button>
-            )}
-            {isManager && (
-              <Button variant="secondary" onClick={() => setEditOpen(true)}>
-                Modifier
-              </Button>
-            )}
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-2xl font-bold text-gray-900">{resource.name}</h1>
+            <Badge tone={resource.isActive ? 'teal' : 'gray'}>
+              {resource.isActive ? 'Disponible' : 'Inactive'}
+            </Badge>
           </div>
-        }
-      />
+          <p className="mt-1 text-sm text-gray-500">{resource.locationName}</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {canBook && (
+            <Link to={`/ressources/${resource.id}/disponibilite`}>
+              <Button>Réserver cette salle</Button>
+            </Link>
+          )}
+          {canBorrow && (
+            <Button variant="success" onClick={() => setLoanOpen(true)}>
+              Emprunter
+            </Button>
+          )}
+          {isManager && (
+            <Button variant="secondary" onClick={() => setEditOpen(true)}>
+              Modifier
+            </Button>
+          )}
+        </div>
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="overflow-hidden lg:col-span-2">
@@ -119,9 +123,7 @@ export function ResourceDetailPage() {
               <div className="flex justify-between gap-2">
                 <dt className="text-gray-500">Type</dt>
                 <dd>
-                  <Badge tone={resource.type === 'room' ? 'blue' : 'purple'}>
-                    {RESOURCE_TYPE_LABELS[resource.type]}
-                  </Badge>
+                  <Badge tone="teal">{RESOURCE_TYPE_LABELS[resource.type]}</Badge>
                 </dd>
               </div>
               <div className="flex justify-between gap-2">

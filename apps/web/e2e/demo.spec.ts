@@ -15,10 +15,13 @@ test.describe('Scénario de démonstration', () => {
     await expect(page.getByRole('heading', { name: /bonjour/i })).toBeVisible();
 
     // 2. Recherche d'une salle
-    await page.getByRole('link', { name: 'Ressources' }).first().click();
-    await page.getByLabel('Recherche').fill('Agora');
+    await page
+      .getByRole('link', { name: /Salles et matériel/i })
+      .first()
+      .click();
+    await page.getByLabel(/rechercher/i).fill('Agora');
     await page.getByRole('button', { name: 'Rechercher' }).click();
-    await expect(page.getByRole('link', { name: /Salle de réunion Agora/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Salle de réunion Agora/i }).first()).toBeVisible();
 
     // 3. Fiche + disponibilités
     await page
@@ -28,20 +31,22 @@ test.describe('Scénario de démonstration', () => {
     await expect(page.getByRole('heading', { name: 'Salle de réunion Agora' })).toBeVisible();
     await page.getByRole('link', { name: 'Réserver' }).click();
     await expect(page).toHaveURL(/disponibilite/);
-    await expect(page.locator('.fc')).toBeVisible();
+    await expect(page.getByText('Créneau').first()).toBeVisible();
 
-    // 4. Réservation via formulaire (dates explicites)
-    await page.locator('.fc').click({ position: { x: 200, y: 200 } });
-    const start = page.getByLabel('Début');
-    // Jour sans réservation seedée (les mocks occupent demain 10h-11h).
+    // 4. Réservation via le sélecteur de créneaux (dates explicites)
     const slotDay = new Date(Date.now() + 10 * 86400_000);
     const pad = (n: number) => String(n).padStart(2, '0');
     const dateStr = `${slotDay.getFullYear()}-${pad(slotDay.getMonth() + 1)}-${pad(slotDay.getDate())}`;
-    await start.fill(`${dateStr}T10:00`);
-    await page.getByLabel('Fin').fill(`${dateStr}T11:00`);
-    await page.getByLabel('Titre').fill('Réservation E2E');
-    await page.getByLabel('Motif').fill('Test automatisé');
-    await page.getByRole('button', { name: 'Réserver', exact: true }).click();
+    await page.locator('#slot-date').fill(dateStr);
+    const freeSlot = page
+      .locator('button[aria-pressed]:not([disabled])')
+      .filter({ hasText: /\d{2}:\d{2} - \d{2}:\d{2}/ })
+      .first();
+    await freeSlot.click();
+    await page.locator('#slot-title').fill('Réservation E2E');
+    await page.locator('#slot-motif').fill('Test automatisé');
+    await page.getByRole('button', { name: /Confirmer la réservation/i }).click();
+    await expect(page.getByText('Réservation confirmée')).toBeVisible();
 
     // 5. La réservation apparaît dans « Mes réservations »
     await page.getByRole('link', { name: 'Mes réservations' }).first().click();

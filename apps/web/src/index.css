@@ -7,7 +7,7 @@
 }
 
 body {
-  @apply bg-gray-50 text-gray-900 antialiased;
+  @apply bg-canvas text-gray-900 antialiased;
 }
 
 /* FullCalendar : ajustements mineurs pour le thème */
@@ -18,7 +18,7 @@ body {
   @apply text-lg font-semibold text-gray-900;
 }
 .fc .fc-button {
-  @apply rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50;
+  @apply rounded-md border border-line bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50;
   text-transform: capitalize;
 }
 .fc .fc-button-primary:not(:disabled).fc-button-active {

@@ -137,7 +137,7 @@ export interface Reservation {
 export interface ReservationCreateInput {
   resourceId: string;
   title: string;
-  purpose: string;
+  purpose?: string;
   start: string;
   end: string;
   participants: number;

@@ -4,7 +4,7 @@
 export const API_BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? '';
 export const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true';
 
-const TOKEN_KEY = 'fablab.access_token';
+const TOKEN_KEY = 'lendhome.access_token';
 
 export function getAccessToken(): string | null {
   try {

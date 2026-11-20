@@ -117,7 +117,7 @@ export const reservationCreateSchema = z
   .object({
     resourceId: z.string().min(1, 'Veuillez choisir une ressource'),
     title: z.string().min(1, 'Le titre est obligatoire').max(120),
-    purpose: z.string().min(1, 'Le motif est obligatoire').max(1000),
+    purpose: z.string().max(1000).optional(),
     start: z.string().min(1, 'La date/heure de début est obligatoire'),
     end: z.string().min(1, 'La date/heure de fin est obligatoire'),
     participants: z.number().int().positive('Au moins 1 participant'),

@@ -20,7 +20,7 @@ export interface SocketClient {
   subscribeStatus(listener: (s: ConnectionStatus) => void): () => void;
 }
 
-const CHANNEL_NAME = 'fablab-socket-events';
+const CHANNEL_NAME = 'lendhome-socket-events';
 
 // ---------- Mock local (BroadcastChannel + event bus local) ----------
 

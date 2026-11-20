@@ -27,6 +27,13 @@ export function ChatWidget() {
     if (open) inputRef.current?.focus();
   }, [open]);
 
+  // Le lien « Assistant » de la barre de navigation ouvre le widget.
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener('lendhome:open-chat', onOpen);
+    return () => window.removeEventListener('lendhome:open-chat', onOpen);
+  }, []);
+
   const send = async () => {
     const text = input.trim();
     if (!text || sending) return;
@@ -85,7 +92,7 @@ export function ChatWidget() {
         >
           <div className="flex items-center justify-between border-b border-gray-100 bg-brand-600 px-4 py-3 text-white">
             <div>
-              <p className="font-semibold">Assistant Fablab</p>
+              <p className="font-semibold">Assistant LENDHOME</p>
               <p className="text-xs text-brand-100">
                 Posez vos questions sur les salles et le matériel
               </p>

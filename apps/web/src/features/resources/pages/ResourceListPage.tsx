@@ -6,9 +6,15 @@ import { useLocations } from '@/features/locations/api';
 import { ResourceCardView, ResourceListItem } from '../components/ResourceCard';
 import { Button } from '@/components/ui/Button';
 import { Field, Input, Select } from '@/components/ui/Input';
-import { EmptyState, ErrorState, PageHeader, Spinner } from '@/components/ui/Feedback';
+import { EmptyState, ErrorState, Spinner } from '@/components/ui/Feedback';
 import { EQUIPMENT_STATE_LABELS } from '@/lib/utils';
 import { cn } from '@/lib/utils';
+
+const TYPE_TABS: { value: '' | ResourceType; label: string }[] = [
+  { value: '', label: 'Tous' },
+  { value: 'room', label: 'Salles' },
+  { value: 'equipment', label: 'Matériel' },
+];
 
 export function ResourceListPage() {
   const [params, setParams] = useSearchParams();
@@ -47,22 +53,49 @@ export function ResourceListPage() {
   };
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / data.pageSize)) : 1;
+  const typeFilter = params.get('type') ?? '';
 
   return (
     <div>
-      <PageHeader
-        title="Ressources"
-        description="Salles et équipements disponibles à la réservation ou au prêt."
-      />
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Salles et matériel</h1>
+        <p className="mt-1 text-sm text-gray-500">
+          Trouvez une salle ou un équipement, puis réservez le créneau qui vous convient.
+        </p>
+      </div>
+
+      {/* Onglets type */}
+      <div
+        className="mb-4 flex gap-1 border-b border-line"
+        role="tablist"
+        aria-label="Type de ressource"
+      >
+        {TYPE_TABS.map((t) => (
+          <button
+            key={t.value}
+            role="tab"
+            aria-selected={typeFilter === t.value}
+            onClick={() => updateParam('type', t.value || null)}
+            className={cn(
+              '-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors',
+              typeFilter === t.value
+                ? 'border-brand-600 text-brand-700'
+                : 'border-transparent text-gray-500 hover:text-gray-800',
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
 
       {/* Filtres */}
       <form
         onSubmit={submitSearch}
-        className="mb-4 grid gap-3 rounded-lg border border-gray-200 bg-white p-4 sm:grid-cols-2 lg:grid-cols-6"
+        className="mb-4 grid gap-3 rounded-xl border border-line bg-white p-4 sm:grid-cols-2 lg:grid-cols-5"
         role="search"
       >
         <div className="lg:col-span-2">
-          <Field label="Recherche" htmlFor="q">
+          <Field label="Rechercher" htmlFor="q">
             <Input
               id="q"
               placeholder="Nom, description, mot-clé…"
@@ -71,18 +104,7 @@ export function ResourceListPage() {
             />
           </Field>
         </div>
-        <Field label="Type" htmlFor="type">
-          <Select
-            id="type"
-            value={params.get('type') ?? ''}
-            onChange={(e) => updateParam('type', e.target.value || null)}
-          >
-            <option value="">Tous</option>
-            <option value="room">Salles</option>
-            <option value="equipment">Équipements</option>
-          </Select>
-        </Field>
-        <Field label="Lieu" htmlFor="locationId">
+        <Field label="Bâtiment" htmlFor="locationId">
           <Select
             id="locationId"
             value={params.get('locationId') ?? ''}
@@ -96,12 +118,12 @@ export function ResourceListPage() {
             ))}
           </Select>
         </Field>
-        <Field label="Capacité min." htmlFor="minCapacity">
+        <Field label="Capacité" htmlFor="minCapacity">
           <Input
             id="minCapacity"
             type="number"
             min={1}
-            placeholder="—"
+            placeholder="Min. places"
             value={params.get('minCapacity') ?? ''}
             onChange={(e) => updateParam('minCapacity', e.target.value || null)}
           />
@@ -120,7 +142,7 @@ export function ResourceListPage() {
             ))}
           </Select>
         </Field>
-        <div className="flex items-end gap-2 lg:col-span-6">
+        <div className="flex items-end gap-2 sm:col-span-2 lg:col-span-5">
           <Button type="submit" size="sm">
             Rechercher
           </Button>
@@ -135,8 +157,11 @@ export function ResourceListPage() {
           >
             Réinitialiser
           </Button>
+          <span className="ml-auto text-sm text-gray-500" aria-live="polite">
+            {data ? `${data.total} résultat${data.total > 1 ? 's' : ''}` : ''}
+          </span>
           <div
-            className="ml-auto flex rounded-md border border-gray-200"
+            className="flex rounded-lg border border-line"
             role="group"
             aria-label="Mode d'affichage"
           >
@@ -148,7 +173,7 @@ export function ResourceListPage() {
                 aria-pressed={view === v}
                 className={cn(
                   'px-3 py-1.5 text-sm',
-                  v === 'grid' ? 'rounded-l-md' : 'rounded-r-md',
+                  v === 'grid' ? 'rounded-l-lg' : 'rounded-r-lg',
                   view === v ? 'bg-brand-600 text-white' : 'bg-white text-gray-600',
                 )}
               >

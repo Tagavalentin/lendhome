@@ -1,71 +1,93 @@
-import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useResource } from '@/features/resources/hooks';
-import { ReservationCalendar } from '@/features/availability/components/ReservationCalendar';
-import { ReservationForm } from '@/features/reservations/components/ReservationForm';
-import { useAuthStore } from '@/stores/auth';
-import { ErrorState, PageHeader, Spinner } from '@/components/ui/Feedback';
-import type { Reservation } from '@plateforme/shared';
+import { SlotBookingForm } from '@/features/availability/components/SlotBookingForm';
+import { ErrorState, Spinner } from '@/components/ui/Feedback';
+import { Card } from '@/components/ui/Feedback';
+import { ROOM_KIND_LABELS } from '@/lib/utils';
 
 export function AvailabilityPage() {
   const { id } = useParams<{ id: string }>();
-  const { data: resource, isLoading, isError } = useResource(id);
-  const user = useAuthStore((s) => s.user);
-  const [slot, setSlot] = useState<{ start: string; end: string } | null>(null);
-  const [editing, setEditing] = useState<Reservation | null>(null);
-  const [formOpen, setFormOpen] = useState(false);
+  const { data: resource, isLoading, isError, refetch } = useResource(id);
 
   if (isLoading) return <Spinner />;
-  if (isError || !resource) return <ErrorState message="Ressource introuvable." />;
+  if (isError || !resource)
+    return <ErrorState message="Ressource introuvable." onRetry={() => refetch()} />;
 
-  const canManage = user?.role === 'manager' || user?.role === 'admin';
-
-  const openCreate = (start: string, end: string) => {
-    setSlot({ start, end });
-    setEditing(null);
-    setFormOpen(true);
-  };
+  const equipments = resource.room
+    ? [
+        resource.room.hasProjector && 'Vidéoprojecteur',
+        resource.room.hasWhiteboard && 'Tableau blanc',
+      ].filter((e): e is string => Boolean(e))
+    : [];
 
   return (
-    <div>
-      <nav className="mb-4 text-sm text-gray-500" aria-label="Fil d'Ariane">
-        <Link to="/ressources" className="hover:text-brand-600">
-          Ressources
-        </Link>
-        <span aria-hidden="true"> / </span>
-        <Link to={`/ressources/${resource.id}`} className="hover:text-brand-600">
-          {resource.name}
-        </Link>
-        <span aria-hidden="true"> / </span>
-        <span className="text-gray-900">Disponibilités</span>
-      </nav>
+    <div className="mx-auto max-w-5xl">
+      <Link
+        to="/ressources"
+        className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-brand-600 hover:underline"
+      >
+        ← Retour à la recherche
+      </Link>
 
-      <PageHeader
-        title={`Disponibilités — ${resource.name}`}
-        description="Cliquez ou faites glisser sur le calendrier pour sélectionner un créneau."
-      />
+      <h1 className="mb-1 text-2xl font-bold text-gray-900">Réserver cette salle</h1>
 
-      <ReservationCalendar
-        resourceId={resource.id}
-        onSelectSlot={openCreate}
-        onSelectEvent={(r) => {
-          if (canManage || r.userId === user?.id) {
-            setEditing(r);
-            setFormOpen(true);
-          }
-        }}
-      />
+      <div className="mt-5 grid gap-6 lg:grid-cols-5">
+        {/* Carte informations */}
+        <Card className="h-fit p-5 lg:col-span-2">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-lg font-semibold text-gray-900">{resource.name}</h2>
+            <span className="rounded-full bg-brand-600 px-2.5 py-0.5 text-xs font-medium text-white">
+              Disponible
+            </span>
+          </div>
 
-      <ReservationForm
-        open={formOpen}
-        onClose={() => setFormOpen(false)}
-        resourceId={resource.id}
-        resourceName={resource.name}
-        maxCapacity={resource.room?.capacity}
-        initialStart={slot?.start}
-        initialEnd={slot?.end}
-        existing={editing}
-      />
+          <dl className="mt-4 grid grid-cols-3 gap-3 text-sm">
+            <div>
+              <dt className="text-xs text-gray-500">Capacité</dt>
+              <dd className="font-medium text-gray-900">
+                {resource.room ? `${resource.room.capacity} places` : '—'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-gray-500">Lieu</dt>
+              <dd className="font-medium text-gray-900">{resource.locationName ?? '—'}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-gray-500">Type</dt>
+              <dd className="font-medium text-gray-900">
+                {resource.room ? ROOM_KIND_LABELS[resource.room.kind] : 'Équipement'}
+              </dd>
+            </div>
+          </dl>
+
+          {equipments.length > 0 && (
+            <div className="mt-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
+                Équipements
+              </p>
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                {equipments.map((e) => (
+                  <span
+                    key={e}
+                    className="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs text-brand-700"
+                  >
+                    {e}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <p className="mt-4 border-t border-line pt-3 text-xs text-gray-500">
+            Les créneaux se mettent à jour en direct, sans recharger la page.
+          </p>
+        </Card>
+
+        {/* Carte réservation */}
+        <Card className="p-5 lg:col-span-3">
+          <SlotBookingForm resource={resource} />
+        </Card>
+      </div>
     </div>
   );
 }
