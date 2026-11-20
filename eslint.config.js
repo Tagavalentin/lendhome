@@ -5,7 +5,14 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 
 export default tseslint.config(
   {
-    ignores: ['**/dist', '**/node_modules', '**/coverage', 'apps/web/public/mockServiceWorker.js'],
+    ignores: [
+      '**/dist',
+      '**/node_modules',
+      '**/coverage',
+      '**/e2e',
+      'apps/web/public/mockServiceWorker.js',
+      'apps/web/scripts',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

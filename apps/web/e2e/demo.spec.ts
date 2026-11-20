@@ -33,9 +33,10 @@ test.describe('Scénario de démonstration', () => {
     // 4. Réservation via formulaire (dates explicites)
     await page.locator('.fc').click({ position: { x: 200, y: 200 } });
     const start = page.getByLabel('Début');
-    const tomorrow = new Date(Date.now() + 86400_000);
+    // Jour sans réservation seedée (les mocks occupent demain 10h-11h).
+    const slotDay = new Date(Date.now() + 10 * 86400_000);
     const pad = (n: number) => String(n).padStart(2, '0');
-    const dateStr = `${tomorrow.getFullYear()}-${pad(tomorrow.getMonth() + 1)}-${pad(tomorrow.getDate())}`;
+    const dateStr = `${slotDay.getFullYear()}-${pad(slotDay.getMonth() + 1)}-${pad(slotDay.getDate())}`;
     await start.fill(`${dateStr}T10:00`);
     await page.getByLabel('Fin').fill(`${dateStr}T11:00`);
     await page.getByLabel('Titre').fill('Réservation E2E');

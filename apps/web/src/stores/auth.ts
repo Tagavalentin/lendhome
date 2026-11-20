@@ -14,7 +14,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: Boolean(getAccessToken()),
-  isLoading: true,
+  isLoading: false,
   setSession: (user, token) => {
     setAccessToken(token);
     set({ user, isAuthenticated: true, isLoading: false });

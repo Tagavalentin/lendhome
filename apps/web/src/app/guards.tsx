@@ -8,17 +8,19 @@ import { Spinner } from '@/components/ui/Feedback';
 export function RequireAuth() {
   const { isAuthenticated, isLoading, user, setUser, logout } = useAuthStore();
   const location = useLocation();
+  // Session à restaurer : token présent mais profil pas encore chargé.
+  const bootstrapping = isAuthenticated && !user;
 
   // Bootstrap de session : si un token existe, on recharge le profil via GET /api/me.
   useEffect(() => {
-    if (isAuthenticated && !user) {
+    if (bootstrapping) {
       fetchMe()
         .then(setUser)
         .catch(() => logout());
     }
-  }, [isAuthenticated, user, setUser, logout]);
+  }, [bootstrapping, setUser, logout]);
 
-  if (isLoading) return <Spinner label="Vérification de la session…" />;
+  if (isLoading || bootstrapping) return <Spinner label="Vérification de la session…" />;
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
