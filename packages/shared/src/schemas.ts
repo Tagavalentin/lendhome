@@ -9,6 +9,20 @@ export const loginSchema = z.object({
 });
 export type LoginInput = z.infer<typeof loginSchema>;
 
+export const registerSchema = z
+  .object({
+    firstName: z.string().min(1, 'Le prénom est obligatoire'),
+    lastName: z.string().min(1, 'Le nom est obligatoire'),
+    email: z.string().email('Adresse e-mail invalide'),
+    password: z.string().min(8, 'Le mot de passe doit contenir au moins 8 caractères'),
+    confirmPassword: z.string(),
+  })
+  .refine((v) => v.password === v.confirmPassword, {
+    message: 'Les mots de passe ne correspondent pas',
+    path: ['confirmPassword'],
+  });
+export type RegisterInput = z.infer<typeof registerSchema>;
+
 export const userRoleSchema = z.enum(['user', 'manager', 'admin']);
 
 export const userSchema = z.object({

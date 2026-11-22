@@ -68,6 +68,18 @@ const users: User[] = [
 
 const DEMO_PASSWORD = 'demo1234';
 
+// Mots de passe par e-mail (stockage mock, insensible à la casse)
+const passwords = new Map<string, string>();
+for (const u of users) passwords.set(u.email.toLowerCase(), DEMO_PASSWORD);
+
+export function checkPassword(email: string, password: string) {
+  return passwords.get(email.toLowerCase()) === password;
+}
+
+export function setPassword(email: string, password: string) {
+  passwords.set(email.toLowerCase(), password);
+}
+
 const locations: Location[] = [
   {
     id: 'loc_campus',

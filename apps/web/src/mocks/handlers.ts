@@ -15,11 +15,12 @@ import type {
 } from '@plateforme/shared';
 import {
   db,
-  DEMO_PASSWORD,
   addAudit,
   addNotification,
   findUserByEmail,
   nid,
+  checkPassword,
+  setPassword,
   resourceName,
   userName,
 } from './db';
@@ -271,7 +272,7 @@ export const handlers = [
     await delay(LATENCY);
     const body = (await request.json()) as { email?: string; password?: string };
     const user = findUserByEmail(body.email ?? '');
-    if (!user || body.password !== DEMO_PASSWORD) {
+    if (!user || !checkPassword(user.email, body.password ?? '')) {
       return HttpResponse.json({ message: 'Identifiants invalides' }, { status: 401 });
     }
     const exp = Date.now() + 8 * 3600_000;
@@ -279,6 +280,54 @@ export const handlers = [
       user,
       tokens: { accessToken: `mock-${user.id}-${exp}`, expiresAt: new Date(exp).toISOString() },
     });
+  }),
+
+  http.post(`${API}/auth/register`, async ({ request }) => {
+    await delay(LATENCY);
+    const body = (await request.json()) as {
+      firstName?: string;
+      lastName?: string;
+      email?: string;
+      password?: string;
+    };
+    const email = (body.email ?? '').trim().toLowerCase();
+    if (!email || !body.password) {
+      return HttpResponse.json(
+        { message: 'E-mail et mot de passe sont obligatoires' },
+        { status: 422 },
+      );
+    }
+    if (findUserByEmail(email)) {
+      return HttpResponse.json(
+        { message: 'Un compte existe déjà avec cet e-mail' },
+        { status: 409 },
+      );
+    }
+    const user: User = {
+      id: nid('u'),
+      email,
+      firstName: body.firstName?.trim() || email.split('@')[0] || 'Utilisateur',
+      lastName: body.lastName?.trim() || '',
+      role: 'user',
+      createdAt: new Date().toISOString(),
+    };
+    db.users.push(user);
+    setPassword(email, body.password);
+    addAudit({
+      userId: user.id,
+      userName: userName(user.id),
+      action: 'user.register',
+      entityType: 'user',
+      entityId: user.id,
+    });
+    const exp = Date.now() + 8 * 3600_000;
+    return HttpResponse.json(
+      {
+        user,
+        tokens: { accessToken: `mock-${user.id}-${exp}`, expiresAt: new Date(exp).toISOString() },
+      },
+      { status: 201 },
+    );
   }),
 
   http.post(`${API}/auth/logout`, async () => {
