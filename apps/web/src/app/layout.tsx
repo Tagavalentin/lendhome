@@ -7,14 +7,14 @@ import { useRealtime } from '@/hooks/useRealtime';
 import { USER_ROLE_LABELS, cn } from '@/lib/utils';
 import type { UserRole } from '@plateforme/shared';
 
-const NAV_ITEMS: { to: string; label: string; roles?: UserRole[] }[] = [
+const NAV_ITEMS: { to: string; label: string; roles?: UserRole[]; end?: boolean }[] = [
   { to: '/', label: 'Tableau de bord' },
   { to: '/ressources', label: 'Salles et matériel' },
   { to: '/mes-reservations', label: 'Mes réservations' },
   { to: '/reservations', label: 'Demandes', roles: ['manager', 'admin'] },
   { to: '/mes-prets', label: 'Mes prêts' },
   { to: '/prets', label: 'Prêts à traiter', roles: ['manager', 'admin'] },
-  { to: '/admin', label: 'Administration', roles: ['admin'] },
+  { to: '/admin', label: 'Administration', roles: ['admin'], end: true },
   { to: '/admin/audit', label: "Journal d'audit", roles: ['admin'] },
 ];
 
@@ -161,7 +161,7 @@ export function AppLayout() {
             <NavLink
               key={item.to}
               to={item.to}
-              end={item.to === '/'}
+              end={item.end || item.to === '/'}
               className={({ isActive }) =>
                 cn(
                   'whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium',
