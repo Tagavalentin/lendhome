@@ -3,20 +3,10 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth';
 import { logout as apiLogout } from '@/features/auth/api';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
+import { Footer } from './footer';
+import { NAV_ITEMS } from './nav-items';
 import { useRealtime } from '@/hooks/useRealtime';
 import { USER_ROLE_LABELS, cn } from '@/lib/utils';
-import type { UserRole } from '@plateforme/shared';
-
-const NAV_ITEMS: { to: string; label: string; roles?: UserRole[] }[] = [
-  { to: '/', label: 'Tableau de bord' },
-  { to: '/ressources', label: 'Salles et matériel' },
-  { to: '/mes-reservations', label: 'Mes réservations' },
-  { to: '/reservations', label: 'Demandes', roles: ['manager', 'admin'] },
-  { to: '/mes-prets', label: 'Mes prêts' },
-  { to: '/prets', label: 'Prêts à traiter', roles: ['manager', 'admin'] },
-  { to: '/admin', label: 'Administration', roles: ['admin'] },
-  { to: '/admin/audit', label: "Journal d'audit", roles: ['admin'] },
-];
 
 const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
   connected: { label: 'En direct', cls: 'bg-brand-100 text-brand-800' },
@@ -185,6 +175,8 @@ export function AppLayout() {
       <main className="mx-auto w-full max-w-7xl flex-1 p-4 sm:p-6">
         <Outlet />
       </main>
+
+      <Footer />
     </div>
   );
 }
