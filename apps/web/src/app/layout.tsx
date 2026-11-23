@@ -15,7 +15,7 @@ const NAV_ITEMS: { to: string; label: string; roles?: UserRole[]; end?: boolean 
   { to: '/mes-prets', label: 'Mes prêts' },
   { to: '/prets', label: 'Prêts à traiter', roles: ['manager', 'admin'] },
   { to: '/admin', label: 'Administration', roles: ['admin'], end: true },
-  { to: '/admin/audit', label: "Journal d'audit", roles: ['admin'] },
+  { to: '/audit', label: "Journal d'audit", roles: ['admin'] },
 ];
 
 const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
