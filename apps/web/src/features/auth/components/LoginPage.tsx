@@ -100,7 +100,7 @@ export function LoginPage() {
   return (
     <div className="flex min-h-screen bg-canvas">
       {/* Hero */}
-      <div className="hidden w-[46%] flex-col justify-between bg-brand-600 p-10 text-white lg:flex xl:p-14">
+      <div className="hidden w-[46%] flex-col justify-between bg-[#082640] p-10 text-white lg:flex xl:p-14">
         <div className="flex items-center gap-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/15 text-lg font-bold">
             L

@@ -17,8 +17,8 @@ export default {
           800: '#07474a',
           900: '#05383a',
         },
-        canvas: '#f6f6f4',
-        line: '#e8eceb',
+        canvas: '#f4f7f8',
+        line: '#dfe6ea',
         surface: '#ffffff',
         accent: {
           50: '#fdf3ec',

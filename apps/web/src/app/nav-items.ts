@@ -1,6 +1,7 @@
 import type { UserRole } from '@plateforme/shared';
 
 export const NAV_ITEMS: { to: string; label: string; roles?: UserRole[]; end?: boolean }[] = [
+  { to: '/', label: 'Tableau de bord', end: true },
   { to: '/ressources', label: 'Salles et matériel' },
   { to: '/mes-reservations', label: 'Mes réservations' },
   { to: '/reservations', label: 'Demandes', roles: ['manager', 'admin'] },
