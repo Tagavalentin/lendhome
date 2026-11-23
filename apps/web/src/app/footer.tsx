@@ -1,11 +1,11 @@
 import { NavLink } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth';
 import { cn } from '@/lib/utils';
-import { NAV_ITEMS } from './nav-items';
+import { FOOTER_ITEMS } from './nav-items';
 
 export function Footer() {
   const user = useAuthStore((s) => s.user);
-  const items = NAV_ITEMS.filter((i) => !i.roles || (user && i.roles.includes(user.role)));
+  const items = FOOTER_ITEMS.filter((i) => !i.roles || (user && i.roles.includes(user.role)));
 
   return (
     <footer className="border-t border-line bg-white">
