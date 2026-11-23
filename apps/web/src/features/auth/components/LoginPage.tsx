@@ -62,7 +62,7 @@ export function LoginPage() {
     setServerError(null);
     try {
       const res = await login(values.email, values.password);
-      setSession(res.user, res.tokens.accessToken);
+      setSession(res.user, res.tokens.accessToken, res.tokens.expiresAt);
       goAfterAuth();
     } catch (err) {
       setServerError(
@@ -84,7 +84,7 @@ export function LoginPage() {
         email: values.email,
         password: values.password,
       });
-      setSession(res.user, res.tokens.accessToken);
+      setSession(res.user, res.tokens.accessToken, res.tokens.expiresAt);
       goAfterAuth();
     } catch (err) {
       setServerError(

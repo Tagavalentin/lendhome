@@ -22,7 +22,8 @@ export function RequireAuth() {
 
   if (isLoading || bootstrapping) return <Spinner label="Vérification de la session…" />;
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+    const destination = `${location.pathname}${location.search}${location.hash}`;
+    return <Navigate to="/login" state={{ from: destination }} replace />;
   }
   return <Outlet />;
 }

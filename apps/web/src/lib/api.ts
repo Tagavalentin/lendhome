@@ -5,19 +5,45 @@ export const API_BASE_URL = (import.meta.env.VITE_API_URL as string | undefined)
 export const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true';
 
 const TOKEN_KEY = 'lendhome.access_token';
+const TOKEN_EXPIRY_KEY = 'lendhome.access_token_expires_at';
 
 export function getAccessToken(): string | null {
   try {
-    return localStorage.getItem(TOKEN_KEY);
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (!token) return null;
+
+    const expiresAt = localStorage.getItem(TOKEN_EXPIRY_KEY);
+    if (expiresAt && Date.now() >= Number(expiresAt)) {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(TOKEN_EXPIRY_KEY);
+      return null;
+    }
+
+    if (!expiresAt && token.startsWith('mock-')) {
+      const mockExpiry = Number(token.split('-').at(-1));
+      if (mockExpiry && Date.now() >= mockExpiry) {
+        localStorage.removeItem(TOKEN_KEY);
+        return null;
+      }
+    }
+
+    return token;
   } catch {
     return null;
   }
 }
 
-export function setAccessToken(token: string | null) {
+export function setAccessToken(token: string | null, expiresAt?: string) {
   try {
-    if (token) localStorage.setItem(TOKEN_KEY, token);
-    else localStorage.removeItem(TOKEN_KEY);
+    if (token) {
+      localStorage.setItem(TOKEN_KEY, token);
+      if (expiresAt) {
+        localStorage.setItem(TOKEN_EXPIRY_KEY, String(new Date(expiresAt).getTime()));
+      }
+    } else {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(TOKEN_EXPIRY_KEY);
+    }
   } catch {
     /* stockage indisponible */
   }
