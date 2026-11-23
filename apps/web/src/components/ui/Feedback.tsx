@@ -92,7 +92,12 @@ export function ErrorState({
 
 export function Card({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn('rounded-xl border border-line bg-white shadow-sm', className)}>
+    <div
+      className={cn(
+        'rounded-xl border border-[#e1e7e9] bg-white shadow-[0_1px_3px_rgba(8,38,64,0.04)]',
+        className,
+      )}
+    >
       {children}
     </div>
   );
