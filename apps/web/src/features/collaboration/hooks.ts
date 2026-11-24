@@ -27,7 +27,7 @@ export function useCreateReply(resourceId: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (v: { announcementId: string; body: string }) =>
-      createReply(v.announcementId, v.body),
+      createReply(resourceId, v.announcementId, v.body),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['collaboration', resourceId] });
     },

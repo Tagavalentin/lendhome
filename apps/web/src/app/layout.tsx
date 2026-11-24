@@ -3,7 +3,6 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth';
 import { logout as apiLogout } from '@/features/auth/api';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
-import { Footer } from './footer';
 import { NAV_ITEMS } from './nav-items';
 import { USER_ROLE_LABELS, cn } from '@/lib/utils';
 
@@ -166,8 +165,6 @@ export function AppLayout() {
           <Outlet />
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

@@ -10,6 +10,8 @@ import { MyReservationsPage } from '@/features/reservations/pages/MyReservations
 import { ReservationRequestsPage } from '@/features/reservations/pages/ReservationRequestsPage';
 import { MyLoansPage } from '@/features/loans/pages/MyLoansPage';
 import { LoanRequestsPage } from '@/features/loans/pages/LoanRequestsPage';
+import { CalendarPage } from '@/features/calendar/pages/CalendarPage';
+import { StatsPage } from '@/features/stats/pages/StatsPage';
 import { AdminUsersPage } from '@/features/admin/pages/AdminUsersPage';
 import { AuditLogPage } from '@/features/admin/pages/AuditLogPage';
 import { AdminSettingsPage } from '@/features/admin/pages/AdminSettingsPage';
@@ -33,6 +35,8 @@ export function AppRouter() {
             <Route path="ressources/:id/disponibilite" element={<AvailabilityPage />} />
             <Route path="mes-reservations" element={<MyReservationsPage />} />
             <Route path="mes-prets" element={<MyLoansPage />} />
+            <Route path="calendrier" element={<CalendarPage />} />
+            <Route path="statistiques" element={<StatsPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
 
             <Route element={<RequireRole roles={['manager', 'admin']} />}>

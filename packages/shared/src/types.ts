@@ -92,6 +92,7 @@ export interface ResourceFilters {
   pageSize?: number;
   sort?: 'name' | 'capacity' | 'createdAt';
   order?: 'asc' | 'desc';
+  availableNow?: boolean;
 }
 
 export interface Paginated<T> {

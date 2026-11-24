@@ -139,7 +139,7 @@ export function DashboardPage() {
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-base font-bold text-[#082640]">Planning du jour</h2>
             <button
-              onClick={() => navigate('/mes-reservations')}
+              onClick={() => navigate('/calendrier')}
               className="text-xs font-medium text-[#246f99] hover:underline"
             >
               Voir le calendrier

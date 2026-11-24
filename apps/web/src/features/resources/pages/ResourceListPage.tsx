@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import type { EquipmentState, ResourceFilters, ResourceType } from '@plateforme/shared';
-import { useResources } from '../hooks';
+import type { EquipmentState, Resource, ResourceFilters, ResourceType } from '@plateforme/shared';
+import { useResources, useCreateResource } from '../hooks';
 import { useLocations } from '@/features/locations/api';
 import { ResourceCardView, ResourceListItem } from '../components/ResourceCard';
+import { ResourceForm } from '../components/ResourceForm';
+import { useAuthStore } from '@/stores/auth';
 import { Button } from '@/components/ui/Button';
 import { Field, Input, Select } from '@/components/ui/Input';
 import { EmptyState, ErrorState, Spinner } from '@/components/ui/Feedback';
@@ -20,6 +22,10 @@ export function ResourceListPage() {
   const [params, setParams] = useSearchParams();
   const [view, setView] = useState<'grid' | 'list'>('grid');
   const [search, setSearch] = useState(params.get('q') ?? '');
+  const [formOpen, setFormOpen] = useState(false);
+  const user = useAuthStore((s) => s.user);
+  const isManager = user?.role === 'manager' || user?.role === 'admin';
+  const createResource = useCreateResource();
 
   const filters: ResourceFilters = useMemo(
     () => ({
@@ -32,6 +38,7 @@ export function ResourceListPage() {
       pageSize: 12,
       sort: (params.get('sort') as ResourceFilters['sort']) || undefined,
       order: (params.get('order') as 'asc' | 'desc') || undefined,
+      availableNow: params.get('availableNow') === '1' || undefined,
     }),
     [params],
   );
@@ -57,35 +64,53 @@ export function ResourceListPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Salles et matériel</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Trouvez une salle ou un équipement, puis réservez le créneau qui vous convient.
-        </p>
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Salles et ressources</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Trouvez un espace ou un équipement disponible.
+          </p>
+        </div>
+        {isManager && <Button onClick={() => setFormOpen(true)}>Ajouter une ressource</Button>}
       </div>
 
-      {/* Onglets type */}
-      <div
-        className="mb-4 flex gap-1 border-b border-line"
-        role="tablist"
-        aria-label="Type de ressource"
-      >
-        {TYPE_TABS.map((t) => (
-          <button
-            key={t.value}
-            role="tab"
-            aria-selected={typeFilter === t.value}
-            onClick={() => updateParam('type', t.value || null)}
-            className={cn(
-              '-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors',
-              typeFilter === t.value
-                ? 'border-brand-600 text-brand-700'
-                : 'border-transparent text-gray-500 hover:text-gray-800',
-            )}
-          >
-            {t.label}
-          </button>
-        ))}
+      {/* Onglets type + filtre disponibilité */}
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <div
+          className="flex gap-1 border-b border-line"
+          role="tablist"
+          aria-label="Type de ressource"
+        >
+          {TYPE_TABS.map((t) => (
+            <button
+              key={t.value}
+              role="tab"
+              aria-selected={typeFilter === t.value}
+              onClick={() => updateParam('type', t.value || null)}
+              className={cn(
+                '-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors',
+                typeFilter === t.value
+                  ? 'border-brand-600 text-brand-700'
+                  : 'border-transparent text-gray-500 hover:text-gray-800',
+              )}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+        <button
+          type="button"
+          aria-pressed={filters.availableNow === true}
+          onClick={() => updateParam('availableNow', params.get('availableNow') ? null : '1')}
+          className={cn(
+            'rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors',
+            filters.availableNow
+              ? 'border-brand-600 bg-brand-600 text-white'
+              : 'border-line bg-white text-gray-600 hover:border-brand-400 hover:text-brand-700',
+          )}
+        >
+          Disponible maintenant
+        </button>
       </div>
 
       {/* Filtres */}
@@ -231,6 +256,18 @@ export function ResourceListPage() {
             Suivant →
           </Button>
         </nav>
+      )}
+
+      {isManager && (
+        <ResourceForm
+          open={formOpen}
+          onClose={() => setFormOpen(false)}
+          loading={createResource.isPending}
+          onSubmit={async (values) => {
+            await createResource.mutateAsync(values as Partial<Resource>);
+            setFormOpen(false);
+          }}
+        />
       )}
     </div>
   );

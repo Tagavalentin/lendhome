@@ -103,6 +103,7 @@ export const resourceFiltersSchema = z.object({
   pageSize: z.coerce.number().int().positive().max(100).default(12),
   sort: z.enum(['name', 'capacity', 'createdAt']).optional(),
   order: z.enum(['asc', 'desc']).optional(),
+  availableNow: z.coerce.boolean().optional(),
 });
 export type ResourceFiltersInput = z.infer<typeof resourceFiltersSchema>;
 
